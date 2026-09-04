@@ -239,8 +239,40 @@ function renderFlow(root, flow) {
         cb.addEventListener("change", () => li.classList.toggle("done", cb.checked));
         label.appendChild(cb);
         const body = h("div", "plan-body");
+        if (p.badge) {
+          const b = h("span", "tier-badge " + (p.badgeClass || "badge-gold"), p.badge);
+          body.appendChild(b);
+        }
         body.appendChild(h("div", "plan-title", p.title));
+        if (p.gain) body.appendChild(h("div", "tier-gain", p.gain));
         if (p.text) body.appendChild(h("div", "plan-text", p.text));
+        if (p.warning) {
+          const w = h("div", "browser-alert-note", p.warning);
+          body.appendChild(w);
+        }
+        if (p.cta || p.article) {
+          const actions = h("div", "plan-actions");
+          if (p.cta) {
+            const ctaBtn = h("a", "btn btn-primary btn-sm", p.cta.label || "Ver oferta →");
+            ctaBtn.href = p.cta.url;
+            ctaBtn.target = "_blank";
+            ctaBtn.rel = "noopener noreferrer";
+            ctaBtn.referrerPolicy = "no-referrer";
+            if (p.cta.event) {
+              ctaBtn.addEventListener("click", () => track(p.cta.event));
+            }
+            actions.appendChild(ctaBtn);
+          }
+          if (p.article) {
+            const artLink = h("a", "article-link", p.article.label || "Ler artigo →");
+            artLink.href = p.article.url;
+            artLink.target = "_blank";
+            artLink.rel = "noopener noreferrer";
+            artLink.referrerPolicy = "no-referrer";
+            actions.appendChild(artLink);
+          }
+          body.appendChild(actions);
+        }
         label.appendChild(body);
         li.appendChild(label);
         planList.appendChild(li);

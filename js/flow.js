@@ -112,17 +112,13 @@ const FLOW = {
 
     // Cálculo do sangramento no método atual
     let taxaAtual = 0.0938; // Default bancão (4.38% IOF + 5% spread)
-    let nomeMetodo = "Cartão de Bancão";
     if (a.setupAtual === "fintech") {
       taxaAtual = 0.0430;
-      nomeMetodo = "Fintechs Tradicionais (Wise/Nomad)";
     } else if (a.setupAtual === "especie") {
       taxaAtual = 0.0700;
-      nomeMetodo = "Casa de Câmbio Física";
     }
 
     const perdaAtual = Math.round(gasto * taxaAtual);
-    // Ganho com ether.fi Cash (2.5% cashback líquido médio)
     const ganhoCashback = Math.round(gasto * 0.025);
     const economiaTotal = perdaAtual + ganhoCashback;
 
@@ -157,53 +153,99 @@ const FLOW = {
       });
     }
 
-    // 2. Montagem do Plano / Setup de 4 Camadas
-    // CAMADA 1: CARTÃO PRINCIPAL DE COMPRAS
+    // 2. Montagem do Plano / Setup de 4 Camadas de Tiago Hyadhuad
+    // CAMADA 1: CARTÃO PRINCIPAL (ether.fi Cash)
     plan.push({
-      title: "1ª Linha (Compras do Dia a Dia): ether.fi Cash",
-      text: `Onde aceitar cartão (hotéis, restaurantes, supermercados, passagens), pague com o cartão Visa do ether.fi Cash debitando diretamente de USDC on-chain. Você tem ZERO IOF bancário brasileiro (4,38%) e recebe até 3% de cashback em compras elegíveis. Projeção de retorno: ~R$ ${ganhoCashback.toLocaleString("pt-BR")} de volta no seu bolso.`,
+      badge: "🥇 1ª LINHA — COMPRAS DO DIA A DIA",
+      badgeClass: "badge-gold",
+      title: "ether.fi Cash (Cartão Principal Visa Web3)",
+      gain: `0% IOF Bancário + até 3% de Cashback em USDC (Retorno projetado: ~R$ ${ganhoCashback.toLocaleString("pt-BR")}/mês)`,
+      text: "Onde aceitar cartão (hotéis, supermercados, cafés, restaurantes, passagens e Uber), pague debitando diretamente de USDC on-chain. Custo líquido negativo pelo cashback e liquidez instantânea.",
+      warning: "⚠️ Regra de ouro Browser-First: conclua todo o cadastro pelo navegador antes de abrir o aplicativo móvel para garantir a vinculação correta do cashback de 3%.",
+      cta: {
+        label: "Solicitar Cartão ether.fi Cash →",
+        url: getOfferLink("default"),
+        event: "clique_oferta_etherfi_setup"
+      },
+      article: {
+        label: "📖 Ler guia de uso no exterior",
+        url: "https://dlt.academy/guias/etherfi-cash-viagem/"
+      }
     });
 
-    // CAMADA 2: SAQUE EM DINHEIRO FÍSICO
+    // CAMADA 2: SAQUE EM DINHEIRO FÍSICO (Cartão ARQ)
     plan.push({
-      title: "2ª Linha (Onde só aceitar papel-moeda): Cartão ARQ Global",
-      text: "Quando a feira de rua ou comércio tradicional não aceitar cartão, use o Cartão ARQ para sacar moeda física nos caixas eletrônicos. O saldo Global em USDc é adquirido com 0% de IOF e a tarifa de saque no plano Standard é de apenas 1% (contra os R$ 20 cobrados pela Wise). Lembre-se de sempre recusar o DCC no caixa.",
+      badge: "🥈 2ª LINHA — SAQUES EM DINHEIRO VIVO",
+      badgeClass: "badge-silver",
+      title: "Cartão ARQ Global (Dólar App)",
+      gain: "0% IOF na formação do saldo · 1% de taxa Standard · Zero taxa fixa de ATM",
+      text: "Para quando o comércio exigir papel-moeda (feiras de rua, mercadinhos tradicionais, gorjetas e lavanderias). Saldo em dólar digital formado sem IOF com taxa de saque até 4x menor que a Wise.",
+      warning: "⚠️ Alerta anti-golpe no caixa eletrônico: SEMPRE aperte 'Without Conversion' ou 'Debit in Local Currency' na tela do ATM para não perder até 12% em conversão dinâmica.",
+      cta: {
+        label: "Pedir Cartão ARQ Global →",
+        url: getOfferLink("arq"),
+        event: "clique_oferta_arq_setup"
+      },
+      article: {
+        label: "📖 Ler auditoria: ARQ vs Wise vs Revolut",
+        url: "https://dlt.academy/blog/arq-saques-exterior/"
+      }
     });
 
-    // CAMADA 3: QR CODE OU BACKUP MÓVEL
+    // CAMADA 3: QR CODE OU CARTEIRA DIGITAL
     if (a.destino === "asia" || a.destino === "global") {
       plan.push({
-        title: "3ª Linha (Fallback de QR Code Asiático): Bybit Pay",
-        text: "Se o comércio local recusar cartão internacional e você estiver sem dinheiro vivo sacado, abra o app da Bybit e escaneie o QR Code bancário local (VietQR/PromptPay). O pagamento é debitado diretamente do seu saldo em USDT com taxa zero de transação.",
+        badge: "🥉 3ª LINHA — QR CODE BANCÁRIO LOCAL",
+        badgeClass: "badge-bronze",
+        title: "Bybit Pay (VietQR no Vietnã & PromptPay na Tailândia)",
+        gain: "Taxa zero de transação · Débito direto em USDT · Sem precisar de dinheiro vivo",
+        text: "No Sudeste Asiático, quase todo comércio de rua opera com QR Code bancário direto. Basta abrir o app da Bybit, escanear o QR do estabelecimento e pagar em USDT na hora sem passar pelo banco.",
+        cta: {
+          label: "Ativar Bybit Pay com Taxa Zero →",
+          url: getOfferLink("bybit"),
+          event: "clique_oferta_bybit_setup"
+        },
+        article: {
+          label: "📖 Comparativo real: Bybit Pay vs Moreta no VietQR",
+          url: "https://dlt.academy/blog/bybit-pay-vs-moreta-vietqr/"
+        }
       });
     } else {
       plan.push({
-        title: "3ª Linha (Pagamento por Aproximação & Backup): Apple/Google Pay",
-        text: "Cadastre seu cartão ether.fi Cash na carteira digital do celular para pagar por aproximação (NFC) em transportes públicos e lojas sem precisar tirar o cartão físico da carteira.",
+        badge: "🥉 3ª LINHA — CARTEIRA DIGITAL & BACKUP",
+        badgeClass: "badge-bronze",
+        title: "Apple Pay / Google Pay com ether.fi Cash",
+        gain: "Pagamento por aproximação no celular · Segurança máxima · Sem expor cartão físico",
+        text: "Adicione o cartão à carteira digital do smartphone para pagar transporte público, metrôs e compras por aproximação (NFC) sem tirar o cartão da carteira.",
+        cta: {
+          label: "Configurar Cartão ether.fi →",
+          url: getOfferLink("default"),
+          event: "clique_oferta_etherfi_setup"
+        },
+        article: {
+          label: "📖 Guia: Setup de Pagamentos no Exterior",
+          url: "https://dlt.academy/guias/etherfi-cash-viagem/"
+        }
       });
     }
 
     // CAMADA 4: RAMPA DE ENTRADA (FUNDING)
-    if (a.origemRenda === "brl" || a.origemRenda === "misto") {
-      plan.push({
-        title: "4ª Linha (Abastecimento via PIX sem Spread): Rampa Descentralizada",
-        text: "Envie Reais (BRL) via PIX com liquidez institucional e taxas mínimas para comprar USDT/USDC na corretora e carregar o saldo do seu cartão ether.fi ou abastecer o ARQ via PIX direto.",
-      });
-    } else {
-      plan.push({
-        title: "4ª Linha (Gestão de Stablecoins): Depósito On-Chain Direto",
-        text: "Transfira USDC ou USDT diretamente pelas redes de baixo custo (Arbitrum, Base ou Solana) para alimentar o saldo de débito do cartão ether.fi Cash em segundos.",
-      });
-    }
-
-    // Passo de segurança operacional
     plan.push({
-      title: "Regra de Ativação Browser-First",
-      text: "Para não perder os benefícios e a vinculação correta do cashback no ether.fi Cash, abra o link oficial e conclua todo o cadastro pelo navegador antes de baixar o aplicativo móvel.",
+      badge: "⚡ 4ª LINHA — RAMPA DE ENTRADA (FUNDING)",
+      badgeClass: "badge-silver",
+      title: a.origemRenda === "brl" || a.origemRenda === "misto" ? "Rampa via PIX sem Spread de Bancão" : "Gestão de Saldo On-Chain em Stablecoin",
+      gain: "Câmbio a preço de mercado · Economia de até R$ 750/mês contra bancões",
+      text: a.origemRenda === "brl" || a.origemRenda === "misto"
+        ? "Envie Reais (BRL) via PIX institucional direto para a corretora ou para a conta ARQ, convertendo para USDT/USDC com spread mínimo (0,5% contra 5% dos bancos tradicionais)."
+        : "Alimente o saldo de débito do cartão transferindo USDC ou USDT pelas redes de baixo custo (Arbitrum ou Base) com taxa de gás inferior a US$ 0,05.",
+      article: {
+        label: "📖 Artigo: Quanto custa gastar US$100 no exterior",
+        url: "https://dlt.academy/blog/custo-100-dolares-exterior/"
+      }
     });
 
     return {
-      headline: `${plan.length} camadas`,
+      headline: `${plan.length} Camadas`,
       sublabel: `Setup personalizado para ${DESTINO_LABEL[a.destino] || "sua viagem"}`,
       tone: "good",
       stats: [
