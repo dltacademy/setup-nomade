@@ -45,7 +45,7 @@ const CONFIG = {
   // Comunidade oficial da marca
   community: {
     url: "https://t.me/dltacademy",
-    label: "Entrar no grupo aberto da DLT →",
+    label: "Entrar grátis no grupo →",
     tag: "Grátis",
     headline: "Comunidade de Nômades e Viajantes",
     sub: "Tire dúvidas sobre pagamentos, cartões, saques e câmbio direto com quem vive na estrada.",
