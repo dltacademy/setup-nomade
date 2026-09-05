@@ -18,8 +18,8 @@ const FLOW = {
 
   steps: [
     {
-      title: "Seu Destino & Duração",
-      description: "As taxas, aceitação de cartões e métodos locais mudam drasticamente por região.",
+      title: "Seu destino e duração",
+      description: "Aceitação, meios locais e necessidade de redundância mudam por região e pelo tempo de viagem.",
       fields: [
         {
           id: "destino",
@@ -31,12 +31,12 @@ const FLOW = {
             { value: "europa", label: "🏛️ Europa (Zona do Euro / Reino Unido)" },
             { value: "latam", label: "🌮 América Latina (Argentina, Colômbia, México...)" },
             { value: "eua", label: "🗽 Estados Unidos / Américas" },
-            { value: "global", label: "✈️ Nômade Global (mudo de país frequentemente)" },
+            { value: "global", label: "✈️ Nômade Global (troco de país frequentemente)" },
           ],
         },
         {
           id: "duracao",
-          label: "Qual é a duração da sua estadia fora?",
+          label: "Qual é a duração da sua estadia fora do país?",
           type: "radio",
           required: true,
           options: [
@@ -48,8 +48,8 @@ const FLOW = {
       ],
     },
     {
-      title: "Rotina de Gastos & Espécie",
-      description: "Como você realmente gasta no seu destino.",
+      title: "Rotina de gastos e espécie",
+      description: "O valor serve apenas para dar escala às comparações; não é enviado nem usado como patrimônio.",
       fields: [
         {
           id: "gastoMensal",
@@ -68,15 +68,15 @@ const FLOW = {
           required: true,
           options: [
             { value: "cartao", label: "Quase tudo em maquininha de cartão (hotéis, mercados, shoppings)" },
-            { value: "dinheiro", label: "Muitas barracas de rua, feiras e lavanderias que só aceitam cash" },
+            { value: "dinheiro", label: "Muitas barracas de rua, feiras e lavanderias que só aceitam dinheiro" },
             { value: "misto", label: "Misto equilibrado (uso cartão onde dá, mas preciso de dinheiro vivo)" },
           ],
         },
       ],
     },
     {
-      title: "Como seu Dinheiro Chega",
-      description: "Para desenhar a rota de câmbio de menor custo da sua conta até o gasto final.",
+      title: "Como seu dinheiro chega",
+      description: "A rota de funding pode custar mais do que a taxa mostrada no pagamento final.",
       fields: [
         {
           id: "origemRenda",
@@ -95,8 +95,8 @@ const FLOW = {
           type: "radio",
           required: true,
           options: [
-            { value: "bancao", label: "Cartão de Crédito Tradicional (Itaú, Nubank, Bradesco)" },
-            { value: "fintech", label: "Conta Global Tradicional (Wise, Nomad, C6 Global)" },
+            { value: "bancao", label: "Cartão de crédito tradicional (Itaú, Nubank, Bradesco...)" },
+            { value: "fintech", label: "Conta global / cartão multimoedas (Wise, Nomad, C6 Global...)" },
             { value: "especie", label: "Compro papel-moeda em casa de câmbio física" },
             { value: "nenhum", label: "Ainda não tenho nenhum cartão internacional" },
           ],
@@ -109,164 +109,201 @@ const FLOW = {
     const findings = [];
     const plan = [];
     const gasto = Number(a.gastoMensal) || 8000;
+    const viagemCurta = a.duracao === "ferias";
+    const precisaDinheiro = a.perfilGasto === "dinheiro" || a.perfilGasto === "misto";
+    const usaCripto = a.origemRenda === "cripto" || a.origemRenda === "misto";
 
-    // Cálculo do sangramento no método atual
-    let taxaAtual = 0.0938; // Default bancão (4.38% IOF + 5% spread)
-    if (a.setupAtual === "fintech") {
-      taxaAtual = 0.0430;
-    } else if (a.setupAtual === "especie") {
-      taxaAtual = 0.0700;
-    }
+    // Regra fiscal vigente no Brasil para operação internacional comum.
+    // Custos adicionais do emissor (spread/tarifa) variam e não são inventados aqui.
+    const iofCartaoInternacional = 0.035;
+    const iofMinimoBancao = Math.round(gasto * iofCartaoInternacional);
 
-    const perdaAtual = Math.round(gasto * taxaAtual);
-    const ganhoCashback = Math.round(gasto * 0.025);
-    const economiaTotal = perdaAtual + ganhoCashback;
-
-    // 1. Diagnósticos e Alertas de Campo
-    if (a.setupAtual === "bancao" || a.setupAtual === "nenhum") {
+    if (a.setupAtual === "bancao") {
       findings.push({
         severity: 3,
-        title: "Alerta de Sangramento: ~9,4% de pedágio em todas as compras",
-        text: `Usar cartão de bancão brasileiro custa 4,38% de IOF + cerca de 5% de spread cambial invisível. Em R$ ${gasto.toLocaleString("pt-BR")} de gasto, você deixa aproximadamente R$ ${perdaAtual.toLocaleString("pt-BR")} de presente para o banco por mês.`,
+        title: "Seu cartão tradicional começa com 3,5% de IOF",
+        text: `Em R$ ${gasto.toLocaleString("pt-BR")} de gasto internacional, só o IOF de 3,5% representa cerca de R$ ${iofMinimoBancao.toLocaleString("pt-BR")}, antes do spread, tarifa ou cashback do emissor. Compare o custo total no app/fatura em vez de assumir um spread fixo.`,
+      });
+    } else if (a.setupAtual === "nenhum") {
+      findings.push({
+        severity: 2,
+        title: "Você parte do zero — então não existe economia atual para projetar",
+        text: "Como você informou que ainda não tem cartão internacional, a ferramenta não atribui uma perda fictícia ao seu setup atual. O objetivo abaixo é montar apenas as camadas que resolvem lacunas reais da viagem.",
       });
     } else if (a.setupAtual === "fintech") {
       findings.push({
-        severity: 2,
-        title: "Fintechs ajudam no IOF, mas cobram tarifas pesadas em saques",
-        text: "Embora contas como Wise e Nomad reduzam o IOF para 1,1% na entrada, os saques físicos têm limites rígidos e cobram tarifas salgadas (a Wise cobra R$ 20 por saque após o primeiro). No setup abaixo você elimina essas travas.",
+        severity: 1,
+        title: "Sua conta global pode já resolver boa parte da viagem",
+        text: "Não trate toda fintech como 1,1% de IOF. Na Wise, por exemplo, a conversão comum de BRL para saldo em moeda estrangeira usa 3,5%; 1,1% aparece no Rende+, que é uma rota de investimento específica. Compare a rota que você realmente usa.",
+      });
+    } else if (a.setupAtual === "especie") {
+      findings.push({
+        severity: 1,
+        title: "Papel-moeda pode continuar como reserva, não precisa ser a única rota",
+        text: "Compare a cotação efetiva da casa de câmbio com cartão/conta global e mantenha dinheiro físico para situações em que cartão ou QR não funcionem.",
+      });
+    }
+
+    if (viagemCurta) {
+      findings.push({
+        severity: 1,
+        title: "Viagem curta: usar o que você já tem pode ser a melhor decisão",
+        text: "Com até 30 dias fora, abrir conta nova, passar por KYC e formar saldo em outro app só vale quando resolve uma lacuna concreta — por exemplo, QR local necessário, saque ou redundância. O plano abaixo evita empilhar conta nova por padrão.",
       });
     }
 
     if (a.destino === "asia") {
       findings.push({
         severity: 2,
-        title: "Regra do Sudeste Asiático: O poder do QR Code bancário local",
-        text: "No Vietnã (VietQR) e na Tailândia (PromptPay), feiras de rua, mercadinhos e barracas de comida aceitam QR Code direto, mas recusam cartão de crédito. Você pode pagar esses QRs com USDT direto pela Bybit com taxa zero, evitando ir ao caixa eletrônico.",
+        title: "QR local é útil, mas o suporte muda por país",
+        text: "A Bybit documenta VietQR no Vietnã. A lista oficial atual não inclui PromptPay na Tailândia, então não trate 'Sudeste Asiático' como uma única rede compatível. Confirme o método local no país e no app antes de depender dele.",
       });
     }
 
-    if (a.perfilGasto === "dinheiro" || a.perfilGasto === "misto") {
+    if (precisaDinheiro) {
       findings.push({
         severity: 2,
-        title: "Alerta Anti-Golpe nos Caixas Eletrônicos (ATMs)",
-        text: "Ao sacar dinheiro vivo no exterior, a tela do caixa eletrônico perguntará se você quer conversão garantida (DCC). SEMPRE recuse escolhendo 'Without Conversion' ou 'Debit in Local Currency'. Aceitar o DCC rouba de 8% a 12% a mais na cotação do caixa!",
+        title: "No ATM, recuse a conversão do próprio caixa quando houver escolha",
+        text: "Prefira a cobrança na moeda local e compare a tela final antes de confirmar. DCC pode piorar bastante a cotação, mas o impacto varia por operador e moeda; a ferramenta não usa um percentual universal.",
       });
     }
 
-    // 2. Montagem do Plano / Setup de 4 Camadas de Tiago Hyadhuad
-    // CAMADA 1: CARTÃO PRINCIPAL (ether.fi Cash)
-    plan.push({
-      badge: "🥇 1ª LINHA — COMPRAS DO DIA A DIA",
-      badgeClass: "badge-gold",
-      title: "ether.fi Cash (Cartão Principal Visa Web3)",
-      gain: `0% IOF Bancário + até 3% de Cashback em USDC (Retorno projetado: ~R$ ${ganhoCashback.toLocaleString("pt-BR")}/mês)`,
-      text: "Onde aceitar cartão (hotéis, supermercados, cafés, restaurantes, passagens e Uber), pague debitando diretamente de USDC on-chain. Custo líquido negativo pelo cashback e liquidez instantânea.",
-      warning: "⚠️ Regra de ouro Browser-First: conclua todo o cadastro pelo navegador antes de abrir o aplicativo móvel para garantir a vinculação correta do cashback de 3%.",
-      cta: {
-        label: "Solicitar Cartão ether.fi Cash →",
-        url: getOfferLink("default"),
-        event: "clique_oferta_etherfi_setup"
-      },
-      article: {
-        label: "📖 Ler guia de uso no exterior",
-        url: "https://dlt.academy/guias/etherfi-cash-viagem/"
-      }
-    });
-
-    // CAMADA 2: SAQUE EM DINHEIRO FÍSICO (Cartão ARQ)
-    plan.push({
-      badge: "🥈 2ª LINHA — SAQUES EM DINHEIRO VIVO",
-      badgeClass: "badge-silver",
-      title: "Cartão ARQ Global (Dólar App)",
-      gain: "0% IOF na formação do saldo · 1% de taxa Standard · Zero taxa fixa de ATM",
-      text: "Para quando o comércio exigir papel-moeda (feiras de rua, mercadinhos tradicionais, gorjetas e lavanderias). Saldo em dólar digital formado sem IOF com taxa de saque até 4x menor que a Wise.",
-      warning: "⚠️ Alerta anti-golpe no caixa eletrônico: SEMPRE aperte 'Without Conversion' ou 'Debit in Local Currency' na tela do ATM para não perder até 12% em conversão dinâmica.",
-      cta: {
-        label: "Pedir Cartão ARQ Global →",
-        url: getOfferLink("arq"),
-        event: "clique_oferta_arq_setup"
-      },
-      article: {
-        label: "📖 Ler auditoria: ARQ vs Wise vs Revolut",
-        url: "https://dlt.academy/blog/arq-saques-exterior/"
-      }
-    });
-
-    // CAMADA 3: QR CODE OU CARTEIRA DIGITAL
-    if (a.destino === "asia" || a.destino === "global") {
+    // 1. Método existente primeiro quando ele já cobre a necessidade.
+    if (a.setupAtual === "fintech" && viagemCurta) {
       plan.push({
-        badge: "🥉 3ª LINHA — QR CODE BANCÁRIO LOCAL",
-        badgeClass: "badge-bronze",
-        title: "Bybit Pay (VietQR no Vietnã & PromptPay na Tailândia)",
-        gain: "Taxa zero de transação · Débito direto em USDT · Sem precisar de dinheiro vivo",
-        text: "No Sudeste Asiático, quase todo comércio de rua opera com QR Code bancário direto. Basta abrir o app da Bybit, escanear o QR do estabelecimento e pagar em USDT na hora sem passar pelo banco.",
-        cta: {
-          label: "Ativar Bybit Pay com Taxa Zero →",
-          url: getOfferLink("bybit"),
-          event: "clique_oferta_bybit_setup"
-        },
+        badge: "1ª LINHA — USE O QUE JÁ TEM",
+        badgeClass: "badge-gold",
+        title: "Sua conta global atual como cartão principal",
+        gain: "Evita abrir uma conta nova sem necessidade",
+        text: "Use a conta/cartão que você já conhece como principal e compare a conversão exibida no momento do gasto. Só adicione outra conta se faltar QR, saque ou redundância.",
         article: {
-          label: "📖 Comparativo real: Bybit Pay vs Moreta no VietQR",
-          url: "https://dlt.academy/blog/bybit-pay-vs-moreta-vietqr/"
+          label: "📖 Ver o guia de pagamentos no exterior",
+          url: "https://dlt.academy/pagamentos-no-exterior/"
         }
       });
-    } else {
+    } else if (a.setupAtual === "bancao" || a.setupAtual === "nenhum" || !viagemCurta) {
       plan.push({
-        badge: "🥉 3ª LINHA — CARTEIRA DIGITAL & BACKUP",
-        badgeClass: "badge-bronze",
-        title: "Apple Pay / Google Pay com ether.fi Cash",
-        gain: "Pagamento por aproximação no celular · Segurança máxima · Sem expor cartão físico",
-        text: "Adicione o cartão à carteira digital do smartphone para pagar transporte público, metrôs e compras por aproximação (NFC) sem tirar o cartão da carteira.",
+        badge: "1ª LINHA — CARTÃO / COMPRAS",
+        badgeClass: "badge-gold",
+        title: "ether.fi Cash como candidato de cartão principal",
+        gain: "Cashback elegível varia progressivamente de 3% a 0,5% conforme membership e gasto mensal",
+        text: "Considere apenas se elegível e se o custo total de funding, FX e uso for competitivo no seu caso. O cashback não é 3% fixo e não transforma automaticamente qualquer compra em custo líquido negativo.",
+        warning: "Confira membership, cashback restante e custos exibidos antes da compra. Benefício e elegibilidade podem mudar.",
         cta: {
-          label: "Configurar Cartão ether.fi →",
+          label: "Conferir condições do ether.fi Cash →",
           url: getOfferLink("default"),
           event: "clique_oferta_etherfi_setup"
         },
         article: {
-          label: "📖 Guia: Setup de Pagamentos no Exterior",
+          label: "📖 Ler guia de uso no exterior",
           url: "https://dlt.academy/guias/etherfi-cash-viagem/"
         }
       });
     }
 
-    // CAMADA 4: RAMPA DE ENTRADA (FUNDING)
+    // 2. Saque somente quando a pessoa realmente precisa de dinheiro físico.
+    if (precisaDinheiro) {
+      plan.push({
+        badge: "2ª LINHA — DINHEIRO FÍSICO",
+        badgeClass: "badge-silver",
+        title: "ARQ Global como rota de saque a comparar",
+        gain: "1% por saque no plano Standard, sem tarifa fixa do provedor por operação",
+        text: "Use como candidato para obter dinheiro local quando necessário. A tarifa do próprio ATM e a conversão até a moeda local podem continuar existindo, então confira a tela do caixa e o app.",
+        warning: "Escolha a moeda local no ATM quando houver opção e evite DCC sem comparar a cotação.",
+        cta: {
+          label: "Conferir Cartão ARQ Global →",
+          url: getOfferLink("arq"),
+          event: "clique_oferta_arq_setup"
+        },
+        article: {
+          label: "📖 Ler comparação de saques",
+          url: "https://dlt.academy/blog/arq-saques-exterior/"
+        }
+      });
+    }
+
+    // 3. QR local só é recomendado onde há suporte documentado.
+    if (a.destino === "asia") {
+      plan.push({
+        badge: "QR LOCAL — QUANDO HOUVER SUPORTE",
+        badgeClass: "badge-bronze",
+        title: "Bybit Pay para VietQR no Vietnã",
+        gain: "A Bybit não cobra transaction fee no VietQR; conversão/FX ainda pode gerar custo",
+        text: "Se a viagem inclui Vietnã e o QR é reconhecido, compare o débito final e use VietQR como alternativa operacional. Para Tailândia, Indonésia e outros países, confirme a rede suportada; não presumimos PromptPay ou outro QR sem documentação atual.",
+        cta: {
+          label: "Conferir Bybit Pay →",
+          url: getOfferLink("bybit"),
+          event: "clique_oferta_bybit_setup"
+        },
+        article: {
+          label: "📖 Guia de VietQR e Bybit Pay",
+          url: "https://dlt.academy/guias/bybit-pay-vietqr/"
+        }
+      });
+    } else if (a.destino === "global") {
+      plan.push({
+        badge: "QR LOCAL — OPCIONAL",
+        badgeClass: "badge-bronze",
+        title: "Confirme a rede QR país por país",
+        gain: "Compatibilidade vale mais do que uma promessa genérica de QR global",
+        text: "VietQR, PIX e outras redes têm regras próprias. Antes de depender de um app, confirme país, método suportado, moeda e custo de conversão.",
+        article: {
+          label: "📖 Ver exemplo real de VietQR",
+          url: "https://dlt.academy/blog/bybit-pay-vs-moreta-vietqr/"
+        }
+      });
+    }
+
+    // 4. Funding é sempre parte do custo, mas sem economia fixa inventada.
     plan.push({
-      badge: "⚡ 4ª LINHA — RAMPA DE ENTRADA (FUNDING)",
+      badge: "FUNDING — COMO O SALDO CHEGA",
       badgeClass: "badge-silver",
-      title: a.origemRenda === "brl" || a.origemRenda === "misto" ? "Rampa via PIX sem Spread de Bancão" : "Gestão de Saldo On-Chain em Stablecoin",
-      gain: "Câmbio a preço de mercado · Economia de até R$ 750/mês contra bancões",
-      text: a.origemRenda === "brl" || a.origemRenda === "misto"
-        ? "Envie Reais (BRL) via PIX institucional direto para a corretora ou para a conta ARQ, convertendo para USDT/USDC com spread mínimo (0,5% contra 5% dos bancos tradicionais)."
-        : "Alimente o saldo de débito do cartão transferindo USDC ou USDT pelas redes de baixo custo (Arbitrum ou Base) com taxa de gás inferior a US$ 0,05.",
+      title: usaCripto ? "Compare rede e custo para mover stablecoin" : "Compare a conversão de BRL antes de formar o saldo",
+      gain: "Funding barato pode preservar a vantagem; funding caro pode apagá-la",
+      text: usaCripto
+        ? "Antes de enviar USDC/USDT, confira rede suportada, taxa de saque e valor final recebido. Não use uma taxa de gás fixa como regra universal."
+        : "Compare o valor final recebido em moeda estrangeira ou stablecoin. Em operações comuns da Wise, por exemplo, o IOF é 3,5%; o Rende+ usa 1,1% por ser uma rota de investimento específica.",
       article: {
-        label: "📖 Artigo: Quanto custa gastar US$100 no exterior",
+        label: "📖 Artigo: quanto custa gastar US$100 no exterior",
         url: "https://dlt.academy/blog/custo-100-dolares-exterior/"
       }
     });
 
+    const custoAtual = a.setupAtual === "bancao"
+      ? { value: "3,5% + custos", label: "IOF + spread/tarifa do emissor" }
+      : a.setupAtual === "nenhum"
+        ? { value: "R$ 0", label: "custo atual informado" }
+        : a.setupAtual === "fintech"
+          ? { value: "ver no app", label: "IOF/tarifa dependem da rota" }
+          : { value: "compare", label: "cotação efetiva do papel-moeda" };
+
+    const semNovaConta = viagemCurta && a.setupAtual === "fintech";
+
     return {
-      headline: `${plan.length} Camadas`,
-      sublabel: `Setup personalizado para ${DESTINO_LABEL[a.destino] || "sua viagem"}`,
+      headline: `${plan.length} ${plan.length === 1 ? "camada" : "camadas"}`,
+      sublabel: `Setup para ${DESTINO_LABEL[a.destino] || "sua viagem"}`,
       tone: "good",
       stats: [
-        { value: "R$ " + economiaTotal.toLocaleString("pt-BR"), label: "economia estimada/mês" },
-        { value: plan.length, label: "camadas no stack" },
-        { value: "0% IOF", label: "gastos no cartão" },
+        custoAtual,
+        { value: plan.length, label: "camadas sugeridas" },
+        { value: "0 envio", label: "respostas enviadas à DLT" },
       ],
       findings,
       plan,
+      convertOverride: semNovaConta ? null : undefined,
+      extraText: "Não existe economia fixa prometida: taxas, cashback, elegibilidade, câmbio e aceitação mudam. Compare o custo real antes de cada decisão.",
       shareCard: {
         eyebrow: "MEU SETUP DE PAGAMENTOS NO EXTERIOR",
-        headline: `${plan.length} Camadas`,
+        headline: `${plan.length} ${plan.length === 1 ? "camada" : "camadas"}`,
         lines: [
           `${(DESTINO_LABEL[a.destino] || "Viagem").split("(")[0].trim()} · R$ ${gasto.toLocaleString("pt-BR")}/mês`,
-          "ether.fi Cash + Cartão ARQ + Bybit Pay",
-          "Economia projetada: R$ " + economiaTotal.toLocaleString("pt-BR") + " · Zero IOF",
+          semNovaConta ? "Prioridade: usar a infraestrutura que já tenho" : "Principal + fallback + funding conforme o cenário",
+          "Compare custos e elegibilidade antes de ativar novas contas",
         ],
         headlineColor: "#6ee7a8",
         coupon: {
-          label: "STACK TESTADO EM CAMPO",
-          offerText: "ether.fi Cash (3% Cashback)\nARQ (Saque sem taxa ATM)",
+          label: "SETUP GERADO POR CENÁRIO",
+          offerText: "Sem vencedor universal\nCustos e suporte mudam por rota",
         },
       },
     };
@@ -274,15 +311,15 @@ const FLOW = {
 
   convert: {
     offerKey: "default",
-    tag: "Pronto para ativar o Passo 1?",
-    headline: "Ative seu Cartão ether.fi Cash com até 3% de Cashback",
-    sub: "O cartão Visa Web3 que elimina o IOF bancário brasileiro e transforma suas compras no exterior em retorno líquido.",
+    tag: "Uma opção para comparar",
+    headline: "Confira se o ether.fi Cash faz sentido no seu cenário",
+    sub: "O cartão pode ser útil para compras elegíveis, mas a decisão depende de funding, FX, membership, cashback e alternativas que você já possui.",
     offers: [
-      "Zero IOF bancário brasileiro (4,38%) em gastos internacionais",
-      "Até 3% de cashback em compras elegíveis debitando direto de USDC",
-      "Aceito globalmente em mais de 100 milhões de maquininhas Visa",
+      "Cashback progressivo entre 3% e 0,5% em transações elegíveis, conforme membership e gasto",
+      "Compare custo total de funding e câmbio antes de decidir",
+      "Não abra uma conta nova se o seu método atual já resolve a viagem",
     ],
-    ctaLabel: "Solicitar Cartão ether.fi Cash →",
-    note: "Importante: abra o link e conclua o cadastro pelo navegador antes de baixar o app móvel para garantir a elegibilidade de cashback.",
+    ctaLabel: "Conferir condições do ether.fi Cash →",
+    note: "Link de indicação. A DLT Academy pode receber uma recompensa se a conta cumprir as condições vigentes, sem custo adicional direto para você. Confirme elegibilidade e benefícios atuais antes de cadastrar.",
   },
 };
