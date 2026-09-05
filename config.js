@@ -4,23 +4,23 @@
 
 const CONFIG = {
   // Link de afiliado padrão — ether.fi Cash (P1 prioritário da DLT Academy)
-  refDefault: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
+  refDefault: "https://www.ether.fi/@e155ee95",
 
   // Rastreamento por canal de origem (?c=...)
   refByChannel: {
-    grupos: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
-    whats: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
-    yt: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
-    bio: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
-    "tg-ads": "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
-    nomad: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
+    grupos: "https://www.ether.fi/@e155ee95",
+    whats: "https://www.ether.fi/@e155ee95",
+    yt: "https://www.ether.fi/@e155ee95",
+    bio: "https://www.ether.fi/@e155ee95",
+    "tg-ads": "https://www.ether.fi/@e155ee95",
+    nomad: "https://www.ether.fi/@e155ee95",
   },
 
   // Catálogo de destinos do roteador contextual
   offers: {
     default: {
       name: "ether.fi Cash (Cartão Principal sem IOF + até 3% Cashback)",
-      url: "https://www.ether.fi/app/cash/referral?ref_code=e155ee95",
+      url: "https://www.ether.fi/@e155ee95",
       code: "e155ee95",
       type: "card",
       headline: "Cartão Visa Internacional Web3",
@@ -28,8 +28,8 @@ const CONFIG = {
     },
     arq: {
       name: "Cartão ARQ (Saque sem Taxa de ATM)",
-      url: "https://www.dolarapp.com/pt-BR/indicados?referrer=tiagohyd_qVz",
-      code: "tiagohyd_qVz",
+      url: "https://www.arqfinance.com/referrals/general?referralCode=tiagohyd_t7t&pid=referral&c=general&is_retargeting=true",
+      code: "tiagohyd_t7t",
       type: "atm",
       headline: "Saques em moeda física sem taxas ocultas",
     },
