@@ -14,10 +14,12 @@ A raiz (`index.html`) é editorial/comercial e explica **o que é usado, para qu
 
 1. Só incluir ferramenta com função clara no setup ou contexto real de uso/teste.
 2. Marcar links de indicação/afiliado de forma explícita e usar `rel="sponsored"` quando aplicável.
-3. Afiliado não determina ranking. Alternativas sem comissão devem aparecer quando fizerem mais sentido.
-4. Não prometer taxas, cashback, cobertura ou benefícios sem conferir as condições vigentes.
-5. Organizar por problema resolvido, não por empresa.
-6. A página deve continuar útil mesmo que todos os CTAs afiliados sejam removidos.
+3. **Não inventar nem pesquisar um referral novo só para preencher a página.** O link afiliado precisa já estar publicado/documentado no ecossistema DLT Academy ou ser fornecido/confirmado diretamente pelo operador.
+4. Quando existir divergência entre planejamento e produção, priorizar o link efetivamente publicado e vigente; registrar a inconsistência para revisão em vez de criar uma terceira versão.
+5. Afiliado não determina ranking. Alternativas sem comissão devem aparecer quando fizerem mais sentido.
+6. Não prometer taxas, cashback, cobertura ou benefícios sem conferir as condições vigentes.
+7. Organizar por problema resolvido, não por empresa.
+8. A página deve continuar útil mesmo que todos os CTAs afiliados sejam removidos.
 
 ## Desenvolvimento
 
