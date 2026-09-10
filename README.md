@@ -1,24 +1,36 @@
-# O Setup do Nômade
+# Setup Nômade
 
-Descubra o stack ideal de cartões, saques e pagamentos para viajar sem pagar taxas bancárias abusivas.
+Hub/portfólio vivo do stack usado na prática para viver e trabalhar de qualquer lugar: dinheiro, pagamentos, cripto, IA, produtividade, infraestrutura digital e viagem.
 
-Construído com o [ferramenta-kit](https://github.com/dltacademy/ferramenta-kit) — página única, zero backend, zero build.
+A raiz (`index.html`) é editorial/comercial e explica **o que é usado, para quê, quando faz sentido e quais links são de afiliado**. Ela não é uma lista genérica de apps e não deve virar um catálogo orientado por comissão.
 
-## Antes de divulgar
+## Arquitetura de produto
 
-1. Preencher `config.js`: links por canal, catálogo `offers` e username do Telegram. GoatCounter é opcional e pode permanecer vazio.
-2. Personalizar o `og-image.svg` 1200×630 desta ferramenta; o asset do template é só um ponto de partida e nunca deve chegar ao ar sem título específico.
-3. Habilitar GitHub Pages no repo (Settings → Pages → Source: GitHub Actions).
-4. Testar local: `python3 -m http.server 8000`.
-5. Rodar `python3 security_check.py .` e `node --check` nos arquivos JS; corrigir sem adicionar `unsafe-inline` ou `unsafe-eval`.
-6. Seguir `SECURITY_BASELINE.md` e o gate do `CONVERSION_FRAMEWORK.md`: testar recomendações, parâmetros inválidos, console e links deslogado.
-7. Se usar a calculadora ATM compartilhada, seguir `ATM_CALCULATOR.md` e repetir fonte, data, mercado, escopo e custos excluídos na própria peça.
-8. Somente então trocar a meta `noindex` por `index, follow`; manter `robots.txt` com `Allow: /`, confirmar o sitemap e divulgar com `?c=<canal>&v=<variante>`.
+- `/` — **Setup Nômade**: hub principal do stack real.
+- `/setup-viagem.html` — **Setup de viagem**: fluxo guiado que antes ocupava a raiz; monta camadas de pagamento para uma viagem específica.
+- `config.js` + `js/flow*.js` — configuração e motor da ferramenta de viagem.
+
+## Regras editoriais
+
+1. Só incluir ferramenta com função clara no setup ou contexto real de uso/teste.
+2. Marcar links de indicação/afiliado de forma explícita e usar `rel="sponsored"` quando aplicável.
+3. Afiliado não determina ranking. Alternativas sem comissão devem aparecer quando fizerem mais sentido.
+4. Não prometer taxas, cashback, cobertura ou benefícios sem conferir as condições vigentes.
+5. Organizar por problema resolvido, não por empresa.
+6. A página deve continuar útil mesmo que todos os CTAs afiliados sejam removidos.
+
+## Desenvolvimento
+
+Página estática, zero backend e zero build. Para testar localmente:
+
+```bash
+python3 -m http.server 8000
+```
+
+Antes de publicar mudanças no fluxo de viagem, executar `python3 security_check.py .` e `node --check` nos arquivos JS. `SECURITY_BASELINE.md` e `CONVERSION_FRAMEWORK.md` continuam normativos para módulos interativos e ofertas.
 
 ## Domínio
 
-Esta ferramenta pertence ao ecossistema **DLT Academy**: URL canônica em `https://setup-nomade.dlt.academy/`, logo apontando para `https://dlt.academy/` e registro no portal + sitemap antes da indexação.
+URL canônica: `https://setup-nomade.dlt.academy/`.
 
-## Estrutura
-
-Ver o [README do kit](https://github.com/dltacademy/ferramenta-kit) pra entender o padrão completo. `SECURITY_BASELINE.md` e `CONVERSION_FRAMEWORK.md` são normativos.
+O projeto pertence ao ecossistema DLT Academy, mas o Setup Nômade deve manter identidade de produto própria: um ponto único para descobrir e entender o stack utilizado na prática.
