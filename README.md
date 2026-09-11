@@ -21,6 +21,20 @@ A raiz (`index.html`) é editorial/comercial e explica **o que é usado, para qu
 7. Organizar por problema resolvido, não por empresa.
 8. A página deve continuar útil mesmo que todos os CTAs afiliados sejam removidos.
 
+## Referrals em uso
+
+A home reutiliza somente links já documentados no ecossistema DLT. Em especial, o referral atual da **Revolut** foi recuperado do CTA publicado em `dltacademy.github.io/blog/arq-saques-exterior/index.html`, atualizado em agosto de 2026:
+
+- Revolut: `https://revolut.com/referral/?referral-code=tiago327k!AUG1-26-AR-BR-H3&geo-redirect`
+- ether.fi Cash: `https://www.ether.fi/@e155ee95`
+- ARQ: `https://www.arqfinance.com/referrals/general?referralCode=tiagohyd_t7t&pid=referral&c=general&is_retargeting=true`
+- Wise: `https://wise.com/invite/irhc/tiagon100`
+- Bybit: `https://www.bybit.com/invite?ref=O0YDQDM`
+- Binance: `https://www.binance.com/register?ref=BOSS2026`
+- OpenCode Go: `https://opencode.ai/go?ref=F40FSZH905`
+
+Se um desses links mudar, atualizar a fonte canônica e esta lista na mesma revisão para evitar versões concorrentes.
+
 ## Desenvolvimento
 
 Página estática, zero backend e zero build. Para testar localmente:
