@@ -3,6 +3,11 @@
    Cards de hierarquia, badges metálicos, botões de ação e links
    ============================================================ */
 
+.back-link {
+  margin: 18px 0 0;
+  font-size: 13px;
+}
+
 .plan-list {
   list-style: none;
   padding: 0;

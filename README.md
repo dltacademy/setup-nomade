@@ -31,7 +31,17 @@ A home reutiliza somente links já documentados no ecossistema DLT. Em especial,
 - Wise: `https://wise.com/invite/irhc/tiagon100`
 - Bybit: `https://www.bybit.com/invite?ref=O0YDQDM`
 - Binance: `https://www.binance.com/register?ref=BOSS2026`
+- TopCashback: `https://www.topcashback.com/ref/member1244137676106`
 - OpenCode Go: `https://opencode.ai/go?ref=F40FSZH905`
+
+## Promessas nos CTAs
+
+Os botões de indicação podem exibir o benefício publicado pelo programa (ex.: "Criar conta no ARQ e conferir os US$ 10", "Cashback vitalício nas taxas spot"). Regras:
+
+1. A promessa tem que existir em peça publicada do ecossistema (artigo/guia/`data-verified-at`) ou ser confirmada pelo operador — nunca inventada para o botão.
+2. Sempre com o qualificador real: valor sob condição ("após US$ 150 em gastos elegíveis"), escopo ("compras elegíveis", "taxas spot"), público ("contas novas e elegíveis").
+3. O botão usa verbo de conferência quando a condição pode ter mudado ("conferir", "ativar"), e a página deixa claro que benefícios e prazos podem mudar.
+4. Se a condição expirar, atualizar o botão e a fonte canônica na mesma revisão.
 
 Se um desses links mudar, atualizar a fonte canônica e esta lista na mesma revisão para evitar versões concorrentes.
 
