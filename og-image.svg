@@ -4,12 +4,12 @@
     <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7FB2FF"/><stop offset="100%" stop-color="#1E4FD8"/></linearGradient>
   </defs>
   <rect width="1200" height="630" fill="#06090F"/><rect width="1200" height="630" fill="url(#glow)"/><rect width="1200" height="6" fill="url(#rule)"/>
-  <rect x="80" y="92" width="282" height="46" rx="23" fill="#1E4FD8" fill-opacity="0.16" stroke="#4A8DF8" stroke-opacity="0.45"/>
-  <text x="108" y="122" font-family="Sora, 'Trebuchet MS', sans-serif" font-size="21" font-weight="700" letter-spacing="1.8" fill="#8FBBFF">SETUP REAL</text>
+  <rect x="80" y="92" width="262" height="46" rx="23" fill="#1E4FD8" fill-opacity="0.16" stroke="#4A8DF8" stroke-opacity="0.45"/>
+  <text x="108" y="122" font-family="Sora, 'Trebuchet MS', sans-serif" font-size="21" font-weight="700" letter-spacing="1.8" fill="#8FBBFF">LINK NA BIO</text>
   <text font-family="Sora, 'Trebuchet MS', sans-serif" fill="#E8EDF7">
     <tspan x="80" y="270" font-size="78" font-weight="700" letter-spacing="-2">Setup Nômade</tspan>
-    <tspan x="80" y="360" font-size="45" font-weight="600">Ferramentas, serviços e stack</tspan>
-    <tspan x="80" y="420" font-size="32" font-weight="500" fill="#9AA7C2">Dinheiro · cripto · IA · trabalho · viagem</tspan>
+    <tspan x="80" y="360" font-size="45" font-weight="600">Os links que eu uso na estrada</tspan>
+    <tspan x="80" y="420" font-size="32" font-weight="500" fill="#9AA7C2">Revolut · ether.fi · ARQ · Wise · Bybit · Binance</tspan>
   </text>
   <rect x="80" y="486" width="1040" height="1" fill="#1E2C4E"/>
   <rect x="80" y="522" width="54" height="54" rx="14" fill="#1E4FD8" fill-opacity="0.16" stroke="#4A8DF8" stroke-opacity="0.4"/>
