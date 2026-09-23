@@ -26,26 +26,3 @@
   }
 })();
 
-// Filtro "Veio de um vídeo?": esmaece os links fora do assunto escolhido,
-// sem esconder nenhum (todo link continua clicável).
-(function () {
-  "use strict";
-  var chips = document.querySelectorAll(".need-chip");
-  var rows = document.querySelectorAll(".link-list [data-needs]");
-  if (!chips.length) return;
-  Array.prototype.forEach.call(chips, function (chip) {
-    chip.addEventListener("click", function () {
-      var need = chip.getAttribute("data-need");
-      Array.prototype.forEach.call(chips, function (c) {
-        var on = c === chip;
-        c.classList.toggle("is-active", on);
-        c.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-      Array.prototype.forEach.call(rows, function (row) {
-        var match = need === "all" || (" " + row.getAttribute("data-needs") + " ").indexOf(" " + need + " ") !== -1;
-        row.parentNode.classList.toggle("is-dim", !match);
-      });
-      if (typeof track === "function") track("filtro_" + need);
-    });
-  });
-})();
