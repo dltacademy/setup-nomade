@@ -38,7 +38,7 @@ const CONFIG = {
       url: "https://www.bybit.com/en/invite/?ref=O0YDQDM",
       code: "O0YDQDM",
       type: "pay",
-      headline: "Pagar VietQR e PromptPay direto com stablecoin",
+      headline: "Pagar VietQR no Vietnã direto com stablecoin",
     },
   },
 
