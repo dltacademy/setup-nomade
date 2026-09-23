@@ -11,10 +11,12 @@ function getChannel() {
   return channel && /^[A-Za-z0-9_-]{1,40}$/.test(channel) ? channel : null;
 }
 
+// `v` identifica a variante ou o vídeo de origem (ex.: ?c=ig&v=pay01), para saber
+// qual peça gerou o clique. Sem valor válido, cai em "a".
 function getVariant() {
   const params = new URLSearchParams(window.location.search);
   const v = params.get("v");
-  return v === "b" ? "b" : "a";
+  return v && /^[A-Za-z0-9_-]{1,40}$/.test(v) ? v : "a";
 }
 
 function getSafeExternalUrl(value) {
