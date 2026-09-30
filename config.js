@@ -19,7 +19,7 @@ const CONFIG = {
   // Catálogo de destinos do roteador contextual
   offers: {
     default: {
-      name: "ether.fi Cash (Cartão Principal sem IOF + até 3% Cashback)",
+      name: "ether.fi Cash (Cartão Principal sem IOF + mínimo 3% de Cashback pelo link)",
       url: "https://www.ether.fi/@e155ee95",
       code: "e155ee95",
       type: "card",
