@@ -27,7 +27,7 @@ A home reutiliza somente links já documentados no ecossistema DLT. Em especial,
 
 - Revolut: `https://revolut.com/referral/?referral-code=tiago327k!AUG1-26-AR-BR-H3&geo-redirect`
 - ether.fi Cash: `https://www.ether.fi/@e155ee95`
-- ARQ: `https://www.arqfinance.com/referrals/general?referralCode=tiagohyd_t7t&pid=referral&c=general&is_retargeting=true`
+- ARQ: `https://www.arqfinance.com/referrals/general?referralCode=tiagohyd_mIM&pid=referral&c=general&is_retargeting=true`
 - Wise: `https://wise.com/invite/irhc/tiagon100`
 - Bybit: `https://www.bybit.com/invite?ref=O0YDQDM`
 - Binance: `https://www.binance.com/register?ref=BOSS2026`
