@@ -13,9 +13,10 @@
       if (!target || typeof target.closest !== "function") return;
       var tracked = target.closest("[data-track]");
       if (!tracked) return;
-      var name = tracked.getAttribute("data-track");
-      if (name && typeof track === "function") {
-        track(name);
+      // data-track é um nome fixo escrito no HTML que identifica o link clicado.
+      var linkId = tracked.getAttribute("data-track");
+      if (linkId && typeof track === "function") {
+        track(linkId);
       }
     },
     true
