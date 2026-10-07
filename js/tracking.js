@@ -30,8 +30,14 @@ function getSafeExternalUrl(value) {
 
 function getRefLink() {
   const channel = getChannel();
-  if (channel && CONFIG.refByChannel && CONFIG.refByChannel[channel]) {
-    return getSafeExternalUrl(CONFIG.refByChannel[channel]);
+  const channelMap = CONFIG.refByChannel;
+  // Só chave própria do mapa: ?c=constructor não pode cair em Object.prototype.
+  if (
+    channel &&
+    channelMap &&
+    Object.prototype.hasOwnProperty.call(channelMap, channel)
+  ) {
+    return getSafeExternalUrl(channelMap[channel]);
   }
   return getSafeExternalUrl(CONFIG.refDefault);
 }
@@ -65,12 +71,22 @@ function track(eventName) {
   }
 }
 
-/** Chamar uma vez no final do <body>, depois de CONFIG estar definido. */
+/**
+ * Chamar uma vez no final do <body>, depois de CONFIG estar definido.
+ *
+ * O count.js do GoatCounter é servido pelo próprio site, nunca de gc.zgo.at:
+ * script de terceiro sem versão fixa teria acesso ao DOM das calculadoras.
+ * js/vendor/goatcounter-count.js foi baixado de https://gc.zgo.at/count.js em
+ * 2026-10-07, sha256 792b7abd26c1fb6ae62906833e09a301251e2641816e69e4f95aba518f3fe3f0.
+ * Para atualizar: baixar de novo, revisar o diff e trocar data e hash aqui.
+ * A CSP precisa do host exato da conta (https://<site>.goatcounter.com) em
+ * connect-src e img-src: o count.js cai para pixel quando sendBeacon falha.
+ */
 function loadGoatCounter() {
   if (!CONFIG.goatCounterSite || !/^[a-z0-9-]{1,63}$/.test(CONFIG.goatCounterSite)) return;
   const gc = document.createElement("script");
   gc.async = true;
   gc.setAttribute("data-goatcounter", "https://" + CONFIG.goatCounterSite + ".goatcounter.com/count");
-  gc.src = "https://gc.zgo.at/count.js";
+  gc.src = "js/vendor/goatcounter-count.js";
   document.head.appendChild(gc);
 }
