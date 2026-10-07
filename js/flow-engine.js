@@ -162,7 +162,7 @@ function renderFlow(root, flow) {
         renderReport();
       } else {
         stepIndex++;
-        track("flow_passo_" + (stepIndex + 1));
+        track("flow_passo");
         renderStep();
       }
     });
@@ -259,7 +259,9 @@ function renderFlow(root, flow) {
             ctaBtn.rel = "noopener noreferrer";
             ctaBtn.referrerPolicy = "no-referrer";
             if (p.cta.event) {
-              ctaBtn.addEventListener("click", () => track(p.cta.event));
+              // Nome fixo do flow.js que identifica o link clicado, nunca uma resposta.
+              const linkId = p.cta.event;
+              ctaBtn.addEventListener("click", () => track(linkId));
             }
             actions.appendChild(ctaBtn);
           }
@@ -320,18 +322,16 @@ function renderFlow(root, flow) {
     // report.convertOverride (definido em buildReport, com base nas respostas) tem
     // prioridade sobre o flow.convert estático — ver BRAND.md "Erros já cometidos":
     // nunca ofereça "abra sua conta" pra quem já respondeu que tem conta na Binance.
+    // Evento fixo e único: o nome nunca revela o ramo a que as respostas levaram.
+    track("roteador_resultado");
     if (convert) {
       root.appendChild(renderConvert(convert));
-      track("roteador_resultado_" + (convert.offerKey || "default"));
     } else {
       // Sem oferta aplicável: a comunidade vira o próximo passo, em bloco
       // próprio. Nenhum ramo pode terminar sem continuação.
       const community = renderCommunity();
       if (community) {
         root.appendChild(community);
-        track("roteador_resultado_comunidade");
-      } else {
-        track("roteador_resultado_sem_oferta");
       }
     }
   }
