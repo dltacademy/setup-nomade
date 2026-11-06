@@ -28,8 +28,8 @@ const CONFIG = {
     },
     arq: {
       name: "Cartão ARQ (Saque sem Taxa de ATM)",
-      url: "https://www.arqfinance.com/referrals/general?referralCode=tiagohyd_h6L&pid=referral&c=general&is_retargeting=true",
-      code: "tiagohyd_h6L",
+      url: "https://www.arqfinance.com/referrals/general?referralCode=tiagohyd_5Wd",
+      code: "tiagohyd_5Wd",
       type: "atm",
       headline: "Saques em moeda física sem taxas ocultas",
     },
