@@ -17,11 +17,19 @@ function renderFlow(root, flow) {
   const answers = {};
   let stepIndex = 0; // índice dentro dos passos VISÍVEIS
 
-  flow.steps.forEach((s) =>
-    s.fields.forEach((f) => {
-      if (f.value !== undefined) answers[f.id] = f.value;
-    })
-  );
+  resetAnswers();
+
+  // Estado inicial das respostas: só os defaults declarados no flow.
+  // Usado na carga e no "Refazer" (antes o Refazer só zerava stepIndex e
+  // mantinha as respostas da rodada anterior).
+  function resetAnswers() {
+    Object.keys(answers).forEach((id) => delete answers[id]);
+    flow.steps.forEach((s) =>
+      s.fields.forEach((f) => {
+        if (f.value !== undefined) answers[f.id] = f.value;
+      })
+    );
+  }
 
   function h(tag, cls, text) {
     const e = document.createElement(tag);
@@ -36,6 +44,30 @@ function renderFlow(root, flow) {
 
   function visibleFields(step) {
     return step.fields.filter((f) => !f.showIf || f.showIf(answers));
+  }
+
+  // Assinatura do que está visível agora (passos e campos). Serve para
+  // re-renderizar só quando uma resposta muda a visibilidade.
+  function visibilitySignature() {
+    return visibleSteps()
+      .map((s) => flow.steps.indexOf(s) + ":" + visibleFields(s).map((f) => f.id).join(","))
+      .join("|");
+  }
+
+  // Cópia das respostas sem o que ficou oculto por showIf: campo oculto
+  // volta ao default declarado (ou some). Sem isso, uma resposta dada antes
+  // de o usuário voltar e mudar de ramo chegava ao buildReport.
+  function answersForReport() {
+    const clean = { ...answers };
+    flow.steps.forEach((s) => {
+      const stepVisible = !s.showIf || s.showIf(answers);
+      s.fields.forEach((f) => {
+        if (stepVisible && (!f.showIf || f.showIf(answers))) return;
+        delete clean[f.id];
+        if (f.value !== undefined) clean[f.id] = f.value;
+      });
+    });
+    return clean;
   }
 
   function renderProgress(container, steps) {
@@ -78,6 +110,12 @@ function renderFlow(root, flow) {
       if (answers[f.id] !== undefined) input.value = answers[f.id];
       input.addEventListener("input", () => {
         answers[f.id] = f.type === "number" ? Number(input.value) : input.value;
+      });
+      // Re-renderizar a cada tecla tiraria o foco; no "change" (blur/Enter)
+      // e só se a visibilidade mudou, para não engolir o clique em Continuar.
+      const shownWith = visibilitySignature();
+      input.addEventListener("change", () => {
+        if (visibilitySignature() !== shownWith) onDynamicChange();
       });
       wrap.appendChild(input);
     } else if (f.type === "select") {
@@ -189,7 +227,7 @@ function renderFlow(root, flow) {
   }
 
   function renderReport() {
-    const report = flow.buildReport(answers);
+    const report = flow.buildReport(answersForReport());
     const convert = report.convertOverride !== undefined ? report.convertOverride : flow.convert;
     track("relatorio_gerado");
     root.replaceChildren();
@@ -312,6 +350,7 @@ function renderFlow(root, flow) {
     }
     const redo = h("button", "btn-secondary", "↺ Refazer");
     redo.addEventListener("click", () => {
+      resetAnswers();
       stepIndex = 0;
       renderStep();
     });
