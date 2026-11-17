@@ -5,8 +5,9 @@
 
 .back-link {
   margin: 18px 0 0;
-  font-size: 13px;
+  font-size: 15px;
 }
+.back-link a { display: inline-flex; align-items: center; min-height: 44px; }
 
 .plan-list {
   list-style: none;
@@ -14,22 +15,14 @@
   margin: 20px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
 }
 
+/* Passos do plano sem caixa própria: o cartão do resultado é a única superfície. */
 .plan-step {
-  background: rgba(14, 24, 46, 0.7);
-  border: 1px solid rgba(74, 141, 248, 0.2);
-  border-radius: 14px;
-  padding: 20px;
-  transition: all .2s ease;
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
   position: relative;
-  overflow: hidden;
-}
-
-.plan-step:hover {
-  border-color: rgba(74, 141, 248, 0.45);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .plan-check {
@@ -38,13 +31,15 @@
   gap: 14px;
   cursor: pointer;
   width: 100%;
+  border-top: 0;
+  padding: 0;
 }
 
 .plan-check input[type="checkbox"] {
   margin-top: 5px;
   width: 18px;
   height: 18px;
-  accent-color: var(--accent);
+  accent-color: var(--green);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -61,9 +56,11 @@
   text-decoration: line-through;
 }
 
+/* Camada do plano: rótulo de hierarquia, neutro. Verde, azul e âmbar são cores de resultado e de
+   ação, não de enfeite; a ordem das camadas já está dita no texto do rótulo. */
 .tier-badge {
   font-family: var(--font-head);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -71,25 +68,12 @@
   border-radius: 6px;
   display: inline-block;
   margin-bottom: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
 }
 
-.tier-badge.badge-gold {
-  background: rgba(110, 231, 168, 0.15);
-  color: var(--green);
-  border: 1px solid rgba(110, 231, 168, 0.3);
-}
-
-.tier-badge.badge-silver {
-  background: rgba(74, 141, 248, 0.15);
-  color: var(--accent);
-  border: 1px solid rgba(74, 141, 248, 0.3);
-}
-
-.tier-badge.badge-bronze {
-  background: rgba(251, 191, 36, 0.15);
-  color: var(--amber);
-  border: 1px solid rgba(251, 191, 36, 0.3);
-}
+.tier-badge.badge-gold { color: var(--text); border-color: #3A4E78; }
 
 .plan-title {
   font-family: var(--font-head);
@@ -101,7 +85,7 @@
 }
 
 .tier-gain {
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--green);
   margin: 4px 0 10px;
@@ -111,21 +95,19 @@
 }
 
 .plan-text {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-dim);
   line-height: 1.55;
   margin: 0 0 10px;
 }
 
 .browser-alert-note {
-  font-size: 12.5px;
-  color: var(--amber);
-  background: rgba(251, 191, 36, 0.08);
-  border: 1px solid rgba(251, 191, 36, 0.25);
-  padding: 10px 14px;
-  border-radius: 8px;
+  font-size: 15px;
+  color: var(--text-dim);
+  border-left: 3px solid var(--amber);
+  padding: 2px 0 2px 12px;
   margin: 12px 0;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .plan-actions {
@@ -138,7 +120,8 @@
 
 .btn-sm {
   padding: 8px 18px;
-  font-size: 13px;
+  min-height: 44px;
+  font-size: 14.5px;
   font-weight: 700;
   border-radius: 8px;
   text-decoration: none;
@@ -147,25 +130,20 @@
   justify-content: center;
 }
 
+/* Link de navegação: azul de ação, sem caixa. */
 .article-link {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sky-light);
   text-decoration: none;
-  padding: 7px 14px;
-  border-radius: 8px;
-  background: rgba(74, 141, 248, 0.08);
-  border: 1px solid rgba(74, 141, 248, 0.2);
-  transition: all .15s ease;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
 .article-link:hover {
-  background: rgba(74, 141, 248, 0.18);
-  border-color: var(--accent);
-  color: #FFFFFF;
+  color: #C7D9FF;
 }
 
 @media (max-width: 600px) {
