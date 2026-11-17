@@ -96,16 +96,19 @@ function renderFlow(root, flow) {
       });
       wrap.appendChild(sel);
     } else if (f.type === "radio") {
-      const group = h("div", "radio-group");
+      // Escolha em linha (.choice-row, bloco 36 do dlt-patterns.css): o estado vai em aria-pressed.
+      const group = h("div", "choice-list");
       f.options.forEach((o) => {
         const val = o.value !== undefined ? o.value : o;
-        const btn = h("button", "", o.label !== undefined ? o.label : o);
+        const btn = h("button", "choice-row");
         btn.type = "button";
-        if (answers[f.id] === val) btn.classList.add("selected");
+        btn.appendChild(h("span", "choice-dot"));
+        btn.appendChild(h("span", "", o.label !== undefined ? o.label : o));
+        btn.setAttribute("aria-pressed", String(answers[f.id] === val));
         btn.addEventListener("click", () => {
           answers[f.id] = val;
-          group.querySelectorAll("button").forEach((b) => b.classList.remove("selected"));
-          btn.classList.add("selected");
+          group.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          btn.setAttribute("aria-pressed", "true");
           onDynamicChange();
         });
         group.appendChild(btn);
@@ -179,7 +182,7 @@ function renderFlow(root, flow) {
     });
     if (convert && !convert.hideRef) {
       lines.push("");
-      lines.push("🎁 Próximo passo: " + convert.headline);
+      lines.push("Próximo passo: " + convert.headline);
       lines.push(getOfferLink(convert.offerKey || "default"));
       lines.push("Link de afiliado: podemos receber comissão sem custo adicional direto para você.");
     }
@@ -198,7 +201,9 @@ function renderFlow(root, flow) {
     card.appendChild(h("h2", "", flow.reportTitle || "Seu plano"));
 
     if (report.headline) {
-      const banner = h("div", "result-banner " + (report.tone === "bad" ? "bad" : "good"));
+      // Estado como grau da escala de 4 (bloco 34): "good" = grau 1 (verde), "bad" = grau 4 (vermelho).
+      const banner = h("div", "result-banner");
+      banner.dataset.grade = report.tone === "bad" ? "4" : "1";
       const inner = h("div");
       inner.appendChild(h("div", "big-stat", report.headline));
       if (report.sublabel) inner.appendChild(h("div", "stat-label", report.sublabel));
@@ -210,8 +215,8 @@ function renderFlow(root, flow) {
       const row = h("div", "stat-row");
       report.stats.forEach((s) => {
         const box = h("div", "stat-box");
-        box.appendChild(h("div", "val", s.value));
         box.appendChild(h("div", "label", s.label));
+        box.appendChild(h("div", "val tnum", s.value));
         row.appendChild(box);
       });
       card.appendChild(row);
@@ -231,6 +236,8 @@ function renderFlow(root, flow) {
 
     if (report.plan && report.plan.length) {
       const planList = h("ol", "plan-list");
+      // Um botão primário cheio por tela: só a primeira ação do plano; as demais são secundárias.
+      let primaryCtaUsed = false;
       report.plan.forEach((p) => {
         const li = h("li", "plan-step");
         const label = h("label", "plan-check");
@@ -253,7 +260,8 @@ function renderFlow(root, flow) {
         if (p.cta || p.article) {
           const actions = h("div", "plan-actions");
           if (p.cta) {
-            const ctaBtn = h("a", "btn btn-primary btn-sm", p.cta.label || "Ver oferta →");
+            const ctaBtn = h("a", "btn " + (primaryCtaUsed ? "btn-secondary" : "btn-primary") + " btn-sm", p.cta.label || "Ver oferta →");
+            primaryCtaUsed = true;
             ctaBtn.href = p.cta.url;
             ctaBtn.target = "_blank";
             ctaBtn.rel = "noopener noreferrer";
@@ -281,11 +289,11 @@ function renderFlow(root, flow) {
       });
       card.appendChild(planList);
 
-      const copyBtn = h("button", "btn-secondary", "📋 Copiar plano");
+      const copyBtn = h("button", "btn-secondary", "Copiar plano");
       copyBtn.addEventListener("click", () => {
         navigator.clipboard.writeText(planAsText(report, convert)).then(() => {
           copyBtn.textContent = "✓ Copiado";
-          setTimeout(() => (copyBtn.textContent = "📋 Copiar plano"), 1500);
+          setTimeout(() => (copyBtn.textContent = "Copiar plano"), 1500);
           track("copiar_plano");
         });
       });
@@ -302,7 +310,7 @@ function renderFlow(root, flow) {
 
     const btns = h("div", "btn-row");
     if (report.shareCard) {
-      const dl = h("button", "btn-secondary", "📥 Baixar card do resultado");
+      const dl = h("button", "btn-secondary", "Baixar card do resultado");
       dl.addEventListener("click", () => {
         const canvas = generateCard({ format: "square", ...report.shareCard });
         downloadCanvasAsPng(canvas, (flow.slug || "plano") + ".png");
@@ -310,7 +318,7 @@ function renderFlow(root, flow) {
       });
       btns.appendChild(dl);
     }
-    const redo = h("button", "btn-secondary", "↺ Refazer");
+    const redo = h("button", "btn-secondary", "Refazer");
     redo.addEventListener("click", () => {
       stepIndex = 0;
       renderStep();
