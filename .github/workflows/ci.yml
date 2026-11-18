@@ -25,3 +25,5 @@ jobs:
         run: bash scripts/montar_site.sh
       - name: Privacidade e publicação
         run: node tests/test-privacidade.mjs
+      - name: Motor de fluxo
+        run: node tests/test-flow-engine.mjs
