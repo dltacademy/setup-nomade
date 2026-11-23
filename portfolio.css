@@ -62,12 +62,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .logo svg{width:24px;height:24px;fill:var(--logo-fg,#fff)}
 .wm{font-family:var(--font-head);font-weight:800;letter-spacing:-.02em;color:var(--logo-fg,#fff);line-height:1}
 .brand-revolut{--brand:#FFFFFF}.logo-revolut{--logo-bg:#0A0A0A;--logo-fg:#fff}
-.brand-etherfi{--brand:#8B7CF6}.logo-etherfi{--logo-bg:linear-gradient(150deg,#8B7CF6,#3B2C9E)}.wm-etherfi{font-size: 0.75rem}.wm-etherfi b{color:#D9D2FF}
-.brand-arq{--brand:#34D399}.logo-arq{--logo-bg:linear-gradient(150deg,#10B981,#064E3B)}.wm-arq{font-size:0.9375rem;letter-spacing:.02em}
+.brand-etherfi{--brand:#8B7CF6}.logo-etherfi{--logo-bg:linear-gradient(150deg,#8B7CF6,#3B2C9E)}/* logotipos de texto num selo fixo de 48 px: tamanho em px de propósito */.wm-etherfi{font-size:11.5px}.wm-etherfi b{color:#D9D2FF}
+.brand-arq{--brand:#34D399}.logo-arq{--logo-bg:linear-gradient(150deg,#10B981,#064E3B)}.wm-arq{font-size:15px;letter-spacing:.02em}
 .brand-wise{--brand:#9FE870}.logo-wise{--logo-bg:#9FE870;--logo-fg:#163300}
-.brand-bybit{--brand:#F7A600}.logo-bybit{--logo-bg:#17181E}.wm-bybit{font-size: 0.75rem;letter-spacing:.01em}.wm-bybit b{color:#F7A600}
+.brand-bybit{--brand:#F7A600}.logo-bybit{--logo-bg:#17181E}.wm-bybit{font-size:11px;letter-spacing:.01em}.wm-bybit b{color:#F7A600}
 .brand-binance{--brand:#F0B90B}.logo-binance{--logo-bg:#181A20;--logo-fg:#F0B90B}
-.brand-topcashback{--brand:#22C3E6}.logo-topcashback{--logo-bg:linear-gradient(150deg,#22C3E6,#0B5E86)}.wm-tcb{font-size:0.875rem}
+.brand-topcashback{--brand:#22C3E6}.logo-topcashback{--logo-bg:linear-gradient(150deg,#22C3E6,#0B5E86)}.wm-tcb{font-size:14px}
 .brand-opencode{--brand:#A5B4FC}.logo-opencode{--logo-bg:#101114}
 
 /* ---------- Por que eu uso ---------- */
