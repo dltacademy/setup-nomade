@@ -69,6 +69,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .brand-binance{--brand:#F0B90B}.logo-binance{--logo-bg:#181A20;--logo-fg:#F0B90B}
 .brand-topcashback{--brand:#22C3E6}.logo-topcashback{--logo-bg:linear-gradient(150deg,#22C3E6,#0B5E86)}.wm-tcb{font-size:14px}
 .brand-opencode{--brand:#A5B4FC}.logo-opencode{--logo-bg:#101114}
+/* Ferramentas e relatórios da própria DLT: monograma, sem logotipo de parceiro. */
+.brand-dlt{--brand:#4A8DF8}.logo-dlt{--logo-bg:linear-gradient(150deg,#2F6BFF,#0B2A6B)}.wm-dlt{font-size:15px;letter-spacing:.02em}
+.decisoes{padding:8px 0 34px}.decisoes-head{margin-bottom:18px}
 
 /* ---------- Por que eu uso ---------- */
 .stories{padding:34px 0 20px;border-top:1px solid var(--line)}
